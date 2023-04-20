@@ -3,6 +3,7 @@ import {StyleSheet, Text, View,TouchableOpacity,Image} from 'react-native';
 import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import RegisterScreen from '../screens/RegisterScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -70,6 +71,8 @@ const Tabs = () => {
                     <Text style={{color: focused ? "#ffcd89" : "#748c94",fontSize: 12,}}>PROFILE
                       </Text>
                        </View>),}}/>
+      
+                       <Tab.Screen name="RegisterScreen" component={RegisterScreen}/>
 
     </Tab.Navigator>
   );
