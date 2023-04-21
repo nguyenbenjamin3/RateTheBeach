@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, Image, ScrollView, Button} from 'react-native';
+import {StyleSheet, Text, View, Image, ScrollView, Button,TouchableOpacity} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import Poll from '../components/Poll';
 import CreatePoll from '../components/CreatePoll';
@@ -44,7 +44,6 @@ const HomeScreen = () => {
 
   return (
     <ScrollView>
-      <Text>HomeScreen</Text>
       <Image source={require('../RateTheBeach.png')} style={styles.logo} />
       {/*  Show the create poll form if showCreatePoll is true */}
       {showCreatePoll ? (
@@ -52,7 +51,11 @@ const HomeScreen = () => {
           <CreatePoll addPoll={addPoll} setShowCreatePoll={setShowCreatePoll} />
         </View>
       ) : (
-        <Button title="Add Poll" onPress={() => setShowCreatePoll(true)} />
+        <View style={styles.addButtonContainer}>
+        <TouchableOpacity onPress={() => setShowCreatePoll(true)} style={styles.addButton}>
+          <Text style={styles.addButtonTitle}>Add Poll</Text>
+        </TouchableOpacity>
+      </View>
       )}
       {feedData.map((item, index) => (
         <View key={index} style={styles.pollContainer}>
@@ -74,6 +77,7 @@ const styles = StyleSheet.create({
     height: 250,
     resizeMode: 'cover',
     alignSelf: 'center',
+    marginBottom: 10,
   },
   pollContainer: {
     borderWidth: 1,
@@ -87,4 +91,24 @@ const styles = StyleSheet.create({
   buttonContainer: {
     margin: 50,
   },
+  addButtonContainer: {
+    alignItems: 'center',
+  },
+  addButton: {
+    width: 120,
+    height:35,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#6666e0',
+    borderRadius: 12,
+  },
+
+  addButtonTitle: {
+    color: 'white', // Set the text color here
+    textAlign: 'center',
+
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+
 });

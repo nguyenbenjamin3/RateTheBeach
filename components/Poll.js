@@ -61,16 +61,19 @@ const styles = StyleSheet.create({
   question: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: 'black',
     marginBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   option: {
     padding: 10,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#ccc',
     borderRadius: 5,
     marginBottom: 10,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
   },
   selectedOption: {
     backgroundColor: '#aaffaa',
