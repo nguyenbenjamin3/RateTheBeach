@@ -5,6 +5,7 @@ import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import SearchScreen from '../screens/SearchScreen';
+import LikedScreen from '../screens/LikedScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -54,8 +55,8 @@ const Tabs = () => {
         }}
       />
       <Tab.Screen
-        name="Login"
-        component={LoginScreen}
+        name="Liked"
+        component={LikedScreen}
         options={{
           tabBarIcon: ({focused}) => (
             <View
@@ -75,7 +76,7 @@ const Tabs = () => {
 
               <Text
                 style={{color: focused ? '#ffcd89' : '#000000', fontSize: 14,fontWeight: 'bold' }}>
-                LOGIN
+                LIKED
               </Text>
             </View>
           ),
