@@ -4,6 +4,7 @@ import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import SearchScreen from '../screens/SearchScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -45,7 +46,7 @@ const Tabs = () => {
               />
 
               <Text
-                style={{color: focused ? '#ffcd89' : '#748c94', fontSize: 12}}>
+                style={{color: focused ? '#ffcd89' : '#000000', fontSize: 14,fontWeight: 'bold' }}>
                 HOME
               </Text>
             </View>
@@ -73,7 +74,7 @@ const Tabs = () => {
               />
 
               <Text
-                style={{color: focused ? '#ffcd89' : '#748c94', fontSize: 12}}>
+                style={{color: focused ? '#ffcd89' : '#000000', fontSize: 14,fontWeight: 'bold' }}>
                 LOGIN
               </Text>
             </View>
@@ -101,7 +102,7 @@ const Tabs = () => {
               />
 
               <Text
-                style={{color: focused ? '#ffcd89' : '#748c94', fontSize: 12}}>
+                style={{color: focused ? '#ffcd89' : '#000000', fontSize: 14,fontWeight: 'bold' }}>
                 PROFILE
               </Text>
             </View>
@@ -109,7 +110,34 @@ const Tabs = () => {
         }}
       />
 
-      <Tab.Screen name="RegisterScreen" component={RegisterScreen} />
+<Tab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{
+          tabBarIcon: ({focused}) => (
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                top: 2,
+              }}>
+              <Image
+                source={require('../images/icon_glass_.png')}
+                resizeMode="contain"
+                style={{
+                  width: 20,
+                  height: 20,
+                }}
+              />
+
+              <Text
+                style={{color: focused ? '#ffcd89' : '#000000', fontSize: 14,fontWeight: 'bold' }}>
+                SEARCH
+              </Text>
+            </View>
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 };
