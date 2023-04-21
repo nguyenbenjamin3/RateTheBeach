@@ -1,71 +1,64 @@
 import {StyleSheet, Text, View, Image, ScrollView, Button} from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Poll from '../components/Poll';
-import CreatePoll from '../components/CreatePolls';
+import CreatePoll from '../components/CreatePoll';
+import addPoll from '../components/CreatePoll';
+import {collection, getDocs} from 'firebase/firestore';
+import {db} from '../firebase';
 
 const HomeScreen = () => {
-  const [feedData, setFeedData] = React.useState([]);
-  const [page, setPage] = React.useState(1);
+  //data for home screen to load
+  const [feedData, setFeedData] = useState([]);
 
-  const loadMoreData = () => {
-    // Replace this with your own code to fetch the data you want to add
-    const newData = [
-      {
-        question: 'What is your favorite food?',
-        options: ['Pizza', 'Tacos', 'Burgers'],
-      },
-      {
-        question: 'What is your favorite color?',
-        options: ['Red', 'Green', 'Blue'],
-      },
-    ];
+  //page number for pagination
+  const [page, setPage] = useState(1);
 
-    // Append the new data to the existing data array
+  //state to show/hide the create poll form
+  const [showCreatePoll, setShowCreatePoll] = useState(false);
+
+  const loadMoreData = async () => {
+    newData = [];
+
+    // Fetch data from your collection
+    const pollsRef = collection(db, 'polls');
+    const snapshot = await getDocs(pollsRef);
+
+    // Map over the array of documents to create an array of objects
+    snapshot.forEach(doc => {
+      const pollData = doc.data();
+      const options = Object.values(pollData.options);
+
+      newData.push({
+        question: pollData.question,
+        options: options,
+      });
+    });
+
     setFeedData([...feedData, ...newData]);
-
-    // Increment the page number for the next fetch
     setPage(page + 1);
   };
 
-  useEffect =
-    (() => {
-      loadMoreData();
-    },
-    []);
+  useEffect(() => {
+    loadMoreData();
+  }, []);
 
   return (
     <ScrollView>
       <Text>HomeScreen</Text>
       <Image source={require('../RateTheBeach.png')} style={styles.logo} />
+      {/*  Show the create poll form if showCreatePoll is true */}
+      {showCreatePoll ? (
+        <View style={styles.pollContainer}>
+          <CreatePoll addPoll={addPoll} setShowCreatePoll={setShowCreatePoll} />
+        </View>
+      ) : (
+        <Button title="Add Poll" onPress={() => setShowCreatePoll(true)} />
+      )}
       {feedData.map((item, index) => (
         <View key={index} style={styles.pollContainer}>
           <Poll question={item.question} options={item.options} />
         </View>
       ))}
-      {/* <View style={styles.pollContainer}>
-        <Poll
-          question="What is your favorite color?"
-          options={['Red', 'Green', 'Blue']}
-        />
-      </View>
-      <View style={styles.pollContainer}>
-        <Poll
-          question="What is your favorite color?"
-          options={['Red', 'Green', 'Blue']}
-        />
-      </View>
-      <View style={styles.pollContainer}>
-        <Poll
-          question="What is your favorite color?"
-          options={['Red', 'Green', 'Blue']}
-        />
-      </View>
-      <View style={styles.pollContainer}>
-        <Poll
-          question="What is your favorite color?"
-          options={['Red', 'Green', 'Blue']}
-        />
-      </View> */}
       <View style={styles.buttonContainer}>
         <Button title="Load More" onPress={loadMoreData} />
       </View>
