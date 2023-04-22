@@ -9,43 +9,68 @@ import {
 import {collection, addDoc} from 'firebase/firestore';
 import {db} from '../firebase';
 
-const CreatePoll = ({addPoll, setShowCreatePoll}) => {
+const CreatePoll = ({setShowCreatePoll}) => {
   // state to store the question and options
-  const [question, setQuestion] = useState('');
-  const [options, setOptions] = useState(['', '']);
+  const [poll, setPoll] = useState({
+    question: '', // title of poll
+    options: ['', ''], // array of options
+    creator: '', // username or id of the poll creator
+    createdAt: new Date(), // date and time when the poll was created
+    lifetime: null, // timestamp for when the poll should expire
+    upvotes: 0,
+    downvotes: 0,
+    comments: [], // array of comments with their own sub-fields
+    category: '', // category of the poll, e.g. 'food', 'politics', 'sports'
+    type: '', // type of poll, either 'rating' or 'polling'
+  });
 
+  // function to add an empty option to the poll
   const handleAddOption = () => {
-    setOptions([...options, '']);
+    setPoll(prevState => ({
+      ...prevState,
+      options: [...prevState.options, ''],
+    }));
   };
 
+  // function to handle the change in the option text
   const handleOptionChange = (value, index) => {
-    const newOptions = [...options];
-    newOptions[index] = value;
-    setOptions(newOptions);
+    setPoll(prevState => {
+      const newOptions = [...prevState.options];
+      newOptions[index] = value;
+      return {...prevState, options: newOptions};
+    });
   };
 
   //function to add a new poll to the database
-  function addPoll(question, options) {
+  const addPollToDB = async poll => {
     try {
       // Add a new document with a generated id.
-      const pollsRef = addDoc(collection(db, 'polls'), {
-        question: question,
-        options: options,
-      });
+      const pollsRef = await addDoc(collection(db, 'polls'), poll);
       console.log('Poll added with ID: ', pollsRef.id);
       setShowCreatePoll(false); // Hide the create poll form after adding the poll
     } catch (e) {
       console.error('Error adding poll: ', e);
     }
-  }
+  };
 
+  // function to handle the add poll button
   const handleAddPoll = () => {
-    addPoll(
-      question,
-      options.filter(option => option !== ''),
-    );
-    setQuestion('');
-    setOptions(['', '']);
+    addPollToDB({
+      ...poll,
+      options: poll.options.filter(option => option !== ''),
+    });
+    setPoll({
+      question: '',
+      options: ['', ''],
+      creator: '',
+      createdAt: new Date(),
+      lifetime: null,
+      upvotes: 0,
+      downvotes: 0,
+      comments: [],
+      category: '',
+      type: '',
+    });
   };
 
   return (
@@ -54,16 +79,16 @@ const CreatePoll = ({addPoll, setShowCreatePoll}) => {
       <TextInput
         style={styles.input}
         placeholder="Enter your question"
-        value={question}
-        onChangeText={setQuestion}
+        value={poll.question}
+        onChangeText={text => setPoll({...poll, question: text})}
       />
-      {options.map((option, index) => (
+      {poll.options.map((option, index) => (
         <TextInput
           key={index}
           style={styles.input}
           placeholder={`Option ${index + 1}`}
           value={option}
-          onChangeText={value => handleOptionChange(value, index)}
+          onChangeText={text => handleOptionChange(text, index)}
         />
       ))}
       <TouchableOpacity style={styles.button} onPress={handleAddOption}>

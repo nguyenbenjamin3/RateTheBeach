@@ -1,9 +1,16 @@
-import {StyleSheet, Text, View, Image, ScrollView, Button,TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  Button,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import Poll from '../components/Poll';
 import CreatePoll from '../components/CreatePoll';
-import addPoll from '../components/CreatePoll';
-import {collection, getDocs} from 'firebase/firestore';
+import {collection, getDocs, orderBy, query} from 'firebase/firestore';
 import {db} from '../firebase';
 
 const HomeScreen = () => {
@@ -17,21 +24,20 @@ const HomeScreen = () => {
   const [showCreatePoll, setShowCreatePoll] = useState(false);
 
   const loadMoreData = async () => {
-    newData = [];
-
-    // Fetch data from your collection
+    // Fetch data from your collection in descending order of createdAt timestamp
     const pollsRef = collection(db, 'polls');
-    const snapshot = await getDocs(pollsRef);
+    const pollsQuery = query(pollsRef, orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(pollsQuery);
 
     // Map over the array of documents to create an array of objects
-    snapshot.forEach(doc => {
+    const newData = snapshot.docs.map(doc => {
       const pollData = doc.data();
       const options = Object.values(pollData.options);
 
-      newData.push({
+      return {
         question: pollData.question,
         options: options,
-      });
+      };
     });
 
     setFeedData([...feedData, ...newData]);
@@ -42,20 +48,34 @@ const HomeScreen = () => {
     loadMoreData();
   }, []);
 
+  //function to add a new poll to the database
+  const addPoll = async poll => {
+    try {
+      // Add a new document with a generated id.
+      const pollsRef = await collection(db, 'polls');
+      await addDoc(pollsRef, poll);
+      setShowCreatePoll(false); // Hide the create poll form after adding the poll
+    } catch (e) {
+      console.error('Error adding poll:', e);
+    }
+  };
+
   return (
     <ScrollView>
       <Image source={require('../RateTheBeach.png')} style={styles.logo} />
-      {/*  Show the create poll form if showCreatePoll is true */}
+      {/* Show the create poll form if showCreatePoll is true */}
       {showCreatePoll ? (
         <View style={styles.pollContainer}>
-          <CreatePoll addPoll={addPoll} setShowCreatePoll={setShowCreatePoll} />
+          <CreatePoll setShowCreatePoll={setShowCreatePoll} />
         </View>
       ) : (
         <View style={styles.addButtonContainer}>
-        <TouchableOpacity onPress={() => setShowCreatePoll(true)} style={styles.addButton}>
-          <Text style={styles.addButtonTitle}>Add Poll</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            onPress={() => setShowCreatePoll(true)}
+            style={styles.addButton}>
+            <Text style={styles.addButtonTitle}>Add Poll</Text>
+          </TouchableOpacity>
+        </View>
       )}
       {feedData.map((item, index) => (
         <View key={index} style={styles.pollContainer}>
@@ -96,7 +116,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     width: 120,
-    height:35,
+    height: 35,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#6666e0',
@@ -110,5 +130,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-
 });
