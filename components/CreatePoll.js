@@ -9,8 +9,8 @@ import {
 import {collection, addDoc} from 'firebase/firestore';
 import {db} from '../firebase';
 
-const CreatePoll = ({setShowCreatePoll}) => {
-  // state to store the question and options
+const CreatePoll = ({setShowCreatePoll, userId}) => {
+  // state to store the poll data
   const [poll, setPoll] = useState({
     question: '', // title of poll
     options: ['', ''], // array of options
@@ -54,6 +54,7 @@ const CreatePoll = ({setShowCreatePoll}) => {
   };
 
   // function to handle the add poll button
+  //CHANGE THE FEATURES IN THIS FUNCTION TO CHANGE THE FEATURES OF THE POLLS
   const handleAddPoll = () => {
     addPollToDB({
       ...poll,

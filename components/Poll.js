@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
-const Poll = ({question, options}) => {
+const Poll = ({question, options, createdAt, downVotes}) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [totalVotes, setTotalVotes] = useState(0);
+
+  const createdAtTime = new Date(createdAt.toDate()).toLocaleString();
 
   const handleSelectOption = option => {
     setSelectedOption(option);
@@ -29,6 +31,7 @@ const Poll = ({question, options}) => {
   return (
     <View>
       <Text style={styles.question}>{question}</Text>
+
       {options.map((option, index) => (
         <TouchableOpacity
           key={index}
@@ -44,7 +47,9 @@ const Poll = ({question, options}) => {
             ]}>
             {option}
           </Text>
+
           <Text style={styles.votes}>{`${totalVotes} votes`}</Text>
+          <Text style={styles.votes}>{`${downVotes} downvotes`}</Text>
         </TouchableOpacity>
       ))}
       <TouchableOpacity
@@ -53,6 +58,7 @@ const Poll = ({question, options}) => {
         disabled={!selectedOption}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
+      <Text>{`Created at: ${createdAtTime}`}</Text>
     </View>
   );
 };

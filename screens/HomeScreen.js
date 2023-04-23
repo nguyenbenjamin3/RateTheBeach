@@ -32,15 +32,17 @@ const HomeScreen = () => {
     // Map over the array of documents to create an array of objects
     const newData = snapshot.docs.map(doc => {
       const pollData = doc.data();
-      const options = Object.values(pollData.options);
 
       return {
         question: pollData.question,
-        options: options,
+        options: Object.values(pollData.options),
+        createdAt: pollData.createdAt,
+        lifetime: pollData.lifetime,
+        downVotes: pollData.downVotes,
       };
     });
 
-    setFeedData([...feedData, ...newData]);
+    setFeedData(newData);
     setPage(page + 1);
   };
 
@@ -53,7 +55,7 @@ const HomeScreen = () => {
     try {
       // Add a new document with a generated id.
       const pollsRef = await collection(db, 'polls');
-      await addDoc(pollsRef, poll);
+      await addDoc(pollsRef, {...poll});
       setShowCreatePoll(false); // Hide the create poll form after adding the poll
     } catch (e) {
       console.error('Error adding poll:', e);
@@ -66,7 +68,7 @@ const HomeScreen = () => {
       {/* Show the create poll form if showCreatePoll is true */}
       {showCreatePoll ? (
         <View style={styles.pollContainer}>
-          <CreatePoll setShowCreatePoll={setShowCreatePoll} />
+          <CreatePoll setShowCreatePoll={setShowCreatePoll} addPoll={addPoll} />
         </View>
       ) : (
         <View style={styles.addButtonContainer}>
@@ -79,7 +81,13 @@ const HomeScreen = () => {
       )}
       {feedData.map((item, index) => (
         <View key={index} style={styles.pollContainer}>
-          <Poll question={item.question} options={item.options} />
+          <Poll
+            question={item.question}
+            options={item.options}
+            createdAt={item.createdAt}
+            lifetime={item.lifetime}
+            downVotes={item.downVotes}
+          />
         </View>
       ))}
       <View style={styles.buttonContainer}>
