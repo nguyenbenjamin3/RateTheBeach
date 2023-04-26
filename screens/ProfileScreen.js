@@ -1,4 +1,5 @@
 import React from 'react';
+import {useNavigation} from '@react-navigation/core'
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import RegisterScreen from './RegisterScreen';
 import LoginScreen from './LoginScreen';

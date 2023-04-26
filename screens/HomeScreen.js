@@ -10,10 +10,23 @@ import {
 import React, {useState, useEffect} from 'react';
 import Poll from '../components/Poll';
 import CreatePoll from '../components/CreatePoll';
+import {useNavigation} from '@react-navigation/core'
+
 import {collection, getDocs, orderBy, query} from 'firebase/firestore';
-import {db} from '../firebase';
+import {auth, db} from '../firebase';
 
 const HomeScreen = () => {
+
+  const navigation = useNavigation()
+  
+  const handleSignOut = () => {
+    auth
+    .signOut()
+    .then(() => {
+      navigation.replace("Login")
+    })
+    .catch(error => alert(error.message))
+  } 
   //data for home screen to load
   const [feedData, setFeedData] = useState([]);
 
@@ -64,6 +77,9 @@ const HomeScreen = () => {
 
   return (
     <ScrollView>
+      <TouchableOpacity style={styles.button} onPress={handleSignOut}>
+        <Text style={styles.buttonText}>Sign Out</Text>      
+      </TouchableOpacity>
       <Image source={require('../RateTheBeach.png')} style={styles.logo} />
       {/* Show the create poll form if showCreatePoll is true */}
       {showCreatePoll ? (

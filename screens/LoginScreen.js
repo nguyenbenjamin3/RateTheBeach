@@ -1,11 +1,33 @@
 import {KeyboardAvoidingView, TouchableOpacity, StyleSheet, Text, TextInput, View, Button,Image} from 'react-native';
-import  {useState, React} from 'react';
+import {useNavigation} from '@react-navigation/core'
+import  {useState, React, useEffect} from 'react';
 import {auth} from '../firebase'
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+
+  const navigation = useNavigation()
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        navigation.navigate("Home")
+      }   
+    })
+      return unsubscribe
+  }, [])
  
+  const handleLogin = () => {
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then(userCredentials => {
+        const user = userCredentials.user;
+        console.log(user.email);
+    })
+    .catch(error => alert(error.message))
+  } 
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -32,6 +54,7 @@ const LoginScreen = () => {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
+          onPress = {handleLogin}
           style={styles.button}
 
         >
