@@ -17,12 +17,25 @@ const ProfileScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>ProfileScreen</Text>
+      <View style={styles.buttonContainer}>
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
+      
+      
+      
       </TouchableOpacity>
+      </View>
+     
+
+
+      <View style={styles.buttonContainer}>
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Text style={styles.buttonText}>Register</Text>
+      
+      
+      
       </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -39,15 +52,23 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginBottom: 20,
   },
+  buttonContainer: {
+    width: '60%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
+    alignSelf: 'center', 
+  },
   button: {
     backgroundColor: '#ffcd89',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
+    width: '100%',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
   },
   buttonText: {
-    color: '#000000',
-    fontSize: 18,
-    fontWeight: 'bold',
+    color: 'black',
+    fontWeight: '700',
+    fontSize: 16,
   },
 });
