@@ -8,8 +8,9 @@ import {
 } from 'react-native';
 import {collection, addDoc} from 'firebase/firestore';
 import {db} from '../firebase';
+import {auth} from '../firebase';
 
-const CreatePoll = ({setShowCreatePoll, userId}) => {
+const CreatePoll = ({setShowCreatePoll}) => {
   // state to store the poll data
   const [poll, setPoll] = useState({
     question: '', // title of poll
@@ -19,9 +20,6 @@ const CreatePoll = ({setShowCreatePoll, userId}) => {
     lifetime: null, // timestamp for when the poll should expire
     upvotes: 0,
     downvotes: 0,
-    comments: [], // array of comments with their own sub-fields
-    category: '', // category of the poll, e.g. 'food', 'politics', 'sports'
-    type: '', // type of poll, either 'rating' or 'polling'
   });
 
   // function to add an empty option to the poll
@@ -44,10 +42,20 @@ const CreatePoll = ({setShowCreatePoll, userId}) => {
   //function to add a new poll to the database
   const addPollToDB = async poll => {
     try {
+      const lifetimeInHours = 24;
+      const endTime = new Date(Date.now() + lifetimeInHours * 60 * 60 * 1000);
+
+      const pollWithEndTime = {
+        ...poll,
+        lifetime: endTime,
+      };
       // Add a new document with a generated id.
-      const pollsRef = await addDoc(collection(db, 'polls'), poll);
+      const pollsRef = await addDoc(collection(db, 'polls'), pollWithEndTime);
       console.log('Poll added with ID: ', pollsRef.id);
       setShowCreatePoll(false); // Hide the create poll form after adding the poll
+      const userRef = collection(db, 'users');
+      const userId = userRef.id;
+      setPoll(prevState => ({...prevState, creator: userId}));
     } catch (e) {
       console.error('Error adding poll: ', e);
     }
@@ -56,10 +64,15 @@ const CreatePoll = ({setShowCreatePoll, userId}) => {
   // function to handle the add poll button
   //CHANGE THE FEATURES IN THIS FUNCTION TO CHANGE THE FEATURES OF THE POLLS
   const handleAddPoll = () => {
+    const currentUser = auth.currentUser;
+    const userId = currentUser ? currentUser.uid : null;
+
     addPollToDB({
       ...poll,
       options: poll.options.filter(option => option !== ''),
+      creator: userId,
     });
+
     setPoll({
       question: '',
       options: ['', ''],
@@ -68,9 +81,6 @@ const CreatePoll = ({setShowCreatePoll, userId}) => {
       lifetime: null,
       upvotes: 0,
       downvotes: 0,
-      comments: [],
-      category: '',
-      type: '',
     });
   };
 
