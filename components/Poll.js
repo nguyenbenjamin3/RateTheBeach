@@ -66,9 +66,6 @@ const Poll = ({pollId, userId, question, options, createdAt, downVotes}) => {
             ]}>
             {option}
           </Text>
-
-          <Text style={styles.votes}>{`${totalVotes} votes`}</Text>
-          <Text style={styles.votes}>{`${downVotes} downvotes`}</Text>
         </TouchableOpacity>
       ))}
       <TouchableOpacity
