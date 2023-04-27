@@ -11,13 +11,14 @@ import React, {useState, useEffect} from 'react';
 import Poll from '../components/Poll';
 import CreatePoll from '../components/CreatePoll';
 import {
+  doc,
   collection,
   collectionGroup,
   getDocs,
   orderBy,
   query,
 } from 'firebase/firestore';
-import {db} from '../firebase';
+import {db, auth} from '../firebase';
 
 const HomeScreen = () => {
   //data for home screen to load
@@ -49,9 +50,10 @@ const HomeScreen = () => {
         question: pollData.question,
         options: Object.values(pollData.options),
         createdAt: pollData.createdAt,
-        pollId: pollData.id,
+        pollId: doc.id,
         lifetime: pollData.lifetime,
         downVotes: pollData.downVotes,
+        userId: auth.currentUser.uid,
       };
     });
 
@@ -92,6 +94,7 @@ const HomeScreen = () => {
             pollId={item.pollId}
             lifetime={item.lifetime}
             downVotes={item.downVotes}
+            userId={item.userId} //figure out how to access current user id
           />
         </View>
       ))}

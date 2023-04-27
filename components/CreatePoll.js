@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {collection, addDoc} from 'firebase/firestore';
+import {collection, addDoc, updateDoc, doc} from 'firebase/firestore';
 import {db} from '../firebase';
 import {auth} from '../firebase';
 
@@ -20,6 +20,7 @@ const CreatePoll = ({setShowCreatePoll}) => {
     lifetime: null, // timestamp for when the poll should expire
     upvotes: 0,
     downvotes: 0,
+    pollId: '',
   });
 
   // function to add an empty option to the poll
@@ -53,6 +54,12 @@ const CreatePoll = ({setShowCreatePoll}) => {
       const pollsRef = await addDoc(collection(db, 'polls'), pollWithEndTime);
       console.log('Poll added with ID: ', pollsRef.id);
       setShowCreatePoll(false); // Hide the create poll form after adding the poll
+
+      // Update the document with the pollId
+      await updateDoc(doc(db, 'polls', pollsRef.id), {
+        pollId: pollsRef.id,
+      });
+
       const userRef = collection(db, 'users');
       const userId = userRef.id;
       setPoll(prevState => ({...prevState, creator: userId}));
@@ -81,6 +88,7 @@ const CreatePoll = ({setShowCreatePoll}) => {
       lifetime: null,
       upvotes: 0,
       downvotes: 0,
+      pollId: '',
     });
   };
 

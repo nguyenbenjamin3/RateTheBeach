@@ -1,7 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {collection, addDoc, query, where, getDocs} from 'firebase/firestore';
+import {db} from '../firebase';
 
-const Poll = ({question, options, createdAt, downVotes}) => {
+const Poll = ({pollId, userId, question, options, createdAt, downVotes}) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [totalVotes, setTotalVotes] = useState(0);
 
@@ -11,21 +13,38 @@ const Poll = ({question, options, createdAt, downVotes}) => {
     setSelectedOption(option);
   };
 
-  const handleVote = () => {
-    fetch(`https://api.example.com/poll/vote`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        option: selectedOption,
-      }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        setTotalVotes(data.totalVotes);
-      })
-      .catch(error => console.error(error));
+  const handleVote = async () => {
+    try {
+      const voteRef = collection(db, 'votes');
+      const docId = `${pollId}-${userId}`;
+      const voteQuery = query(
+        voteRef,
+        where('pollId', '==', pollId),
+        where('userId', '==', userId),
+      );
+      const voteSnapshot = await getDocs(voteQuery);
+      if (voteSnapshot.size > 0) {
+        console.log('User has already voted for this poll');
+        return;
+      }
+      if (pollId && selectedOption) {
+        console.log('pollId and selectedOption are not null');
+        await addDoc(
+          voteRef,
+          {
+            pollId: pollId,
+            userId: userId,
+            option: selectedOption,
+          },
+          docId,
+        );
+        setTotalVotes(totalVotes + 1);
+      } else {
+        console.log('pollId or selectedOption is null');
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

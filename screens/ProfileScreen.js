@@ -1,16 +1,14 @@
 import React from 'react';
-import {useNavigation} from '@react-navigation/core'
+import {useNavigation} from '@react-navigation/core';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import RegisterScreen from './RegisterScreen';
 import LoginScreen from './LoginScreen';
 
 const ProfileScreen = ({navigation}) => {
-
   const handleLogin = () => {
     navigation.navigate(LoginScreen);
   };
 
- 
   const handleRegister = () => {
     navigation.navigate(RegisterScreen);
   };
@@ -19,23 +17,15 @@ const ProfileScreen = ({navigation}) => {
     <View style={styles.container}>
       <Text style={styles.text}>ProfileScreen</Text>
       <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      
-      
-      
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
       </View>
-     
-
 
       <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Register</Text>
-      
-      
-      
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>Register</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -58,7 +48,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 30,
-    alignSelf: 'center', 
+    alignSelf: 'center',
   },
   button: {
     backgroundColor: '#ffcd89',
