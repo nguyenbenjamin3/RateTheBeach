@@ -10,6 +10,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import Tabs from './navigation/tabs';
 import DisplayScreens from './navigation/DisplayScreens';
 import RegisterScreen from './screens/RegisterScreen';
+import OnboardingScreen from './screens/OnboardingScreen';
 
 const Stack = createStackNavigator();
 
@@ -17,22 +18,29 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        {
-          <Stack.Navigator>
-            <Stack.Screen
-              name="Tabs"
-              component={Tabs}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Profile" component={ProfileScreen} />
-            <Stack.Screen name="LoginScreen" component={LoginScreen} />
-            <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-          </Stack.Navigator>
-        }
-
-      </NavigationContainer>
+      <Stack.Navigator initialRouteName={"OnboardingScreen"}>
+        <Stack.Screen
+          name="Onboarding"
+          component={OnboardingScreen}
+          options={{header: () => null}}
+        />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{header: ({navigation}) => null}}
+        />
+        <Stack.Screen
+          name="RegisterScreen"
+          component={RegisterScreen}
+          options={({navigation}) => ({header: () => null})}
+        />
+        <Stack.Screen
+          name="DisplayScreens"
+          component={DisplayScreens}
+          options={{header: () => null}}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
     </SafeAreaProvider>
   );
 }
@@ -45,3 +53,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+
