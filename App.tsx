@@ -10,6 +10,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import Tabs from './navigation/tabs';
 import DisplayScreens from './navigation/DisplayScreens';
 import RegisterScreen from './screens/RegisterScreen';
+import SearchScreen from './screens/SearchScreen';
 
 const Stack = createStackNavigator();
 
@@ -29,9 +30,9 @@ export default function App() {
             <Stack.Screen name="Profile" component={ProfileScreen} />
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+            <Stack.Screen name="SearchScreen" component={SearchScreen} />
           </Stack.Navigator>
         }
-
       </NavigationContainer>
     </SafeAreaProvider>
   );
