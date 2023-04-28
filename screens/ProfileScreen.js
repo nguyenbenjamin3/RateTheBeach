@@ -1,29 +1,34 @@
 import React from 'react';
 import {useNavigation} from '@react-navigation/core';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import RegisterScreen from './RegisterScreen';
+import OnboardingScreen from './OnboardingScreen';
+import { auth } from '../firebase';
 
 const ProfileScreen = ({navigation}) => {
 
 
-  const handleRegister = () => {
-    navigation.navigate(RegisterScreen);
-  };
+const handleSignOut = () => {
+  auth
+  .signOut()
+  .then(() => {
+    navigation.navigate('Onboarding')
+
+  })
+  .catch(error => alert(error.message))
+}
+
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>ProfileScreen</Text>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} >
-          <Text style={styles.buttonText}>Signout</Text>
+        <TouchableOpacity style={styles.button} 
+        onPress = {handleSignOut}
+        >
+          <Text style={styles.buttonText}>Sign Out</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>Register</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
