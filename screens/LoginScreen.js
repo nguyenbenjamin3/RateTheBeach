@@ -2,6 +2,7 @@ import {KeyboardAvoidingView, TouchableOpacity, StyleSheet, Text, TextInput, Vie
 import {useNavigation} from '@react-navigation/core'
 import  {useState, React, useEffect} from 'react';
 import {auth} from '../firebase'
+import HomeScreen from './HomeScreen';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('')
@@ -12,7 +13,7 @@ const LoginScreen = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
-        navigation.navigate("Home")
+        navigation.navigate('DisplayScreens')
       }   
     })
       return unsubscribe

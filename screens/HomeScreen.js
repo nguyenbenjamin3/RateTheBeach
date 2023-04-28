@@ -69,7 +69,7 @@ const HomeScreen = () => {
   }, []);
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.scrollview}>
       <Image source={require('../RateTheBeach.png')} style={styles.logo} />
       {/* Show the create poll form if showCreatePoll is true */}
       {showCreatePoll ? (
@@ -126,6 +126,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     margin: 50,
+    marginTop:10,
+    marginBottom: 100,
   },
   addButtonContainer: {
     alignItems: 'center',
@@ -137,6 +139,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#6666e0',
     borderRadius: 12,
+  },
+  ScrollView:{
+    marginBottom: 100,
   },
 
   addButtonTitle: {
