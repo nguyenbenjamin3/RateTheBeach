@@ -2,12 +2,9 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/core';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import RegisterScreen from './RegisterScreen';
-import LoginScreen from './LoginScreen';
 
 const ProfileScreen = ({navigation}) => {
-  const handleLogin = () => {
-    navigation.navigate(LoginScreen);
-  };
+
 
   const handleRegister = () => {
     navigation.navigate(RegisterScreen);
@@ -17,8 +14,8 @@ const ProfileScreen = ({navigation}) => {
     <View style={styles.container}>
       <Text style={styles.text}>ProfileScreen</Text>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
+        <TouchableOpacity style={styles.button} >
+          <Text style={styles.buttonText}>Signout</Text>
         </TouchableOpacity>
       </View>
 
