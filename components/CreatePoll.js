@@ -31,6 +31,10 @@ const CreatePoll = ({setShowCreatePoll}) => {
     }));
   };
 
+  const handleCancel = () => {
+    setShowCreatePoll(false);
+  };
+
   // function to handle the change in the option text
   const handleOptionChange = (value, index) => {
     setPoll(prevState => {
@@ -116,6 +120,9 @@ const CreatePoll = ({setShowCreatePoll}) => {
       <TouchableOpacity style={styles.button} onPress={handleAddPoll}>
         <Text style={styles.buttonText}>Add Poll</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+        <Text style={styles.buttonText}>Cancel</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -152,6 +159,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
+    cancelButton: {
+      backgroundColor: '#f44336',
+      borderRadius: 5,
+      padding: 10,
+      alignItems: 'center',
+      marginTop: 10,
+    },
 });
 
 export default CreatePoll;

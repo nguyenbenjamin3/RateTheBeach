@@ -29,6 +29,9 @@ const HomeScreen = () => {
 
   //state to show/hide the create poll form
   const [showCreatePoll, setShowCreatePoll] = useState(false);
+  const [showCreateRating, setShowCreateRating] = useState(false);
+
+  //const [showModal, setShowModal] = useState(false);
 
   const loadMoreData = async () => {
     // Fetch data from your collection in descending order of createdAt timestamp
@@ -81,7 +84,7 @@ const HomeScreen = () => {
           <TouchableOpacity
             onPress={() => setShowCreatePoll(true)}
             style={styles.addButton}>
-            <Text style={styles.addButtonTitle}>Add Poll</Text>
+            <Text style={styles.addButtonTitle}>Add Post</Text>
           </TouchableOpacity>
         </View>
       )}
