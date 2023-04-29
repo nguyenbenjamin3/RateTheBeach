@@ -10,23 +10,17 @@ import {
 import React, {useState, useEffect} from 'react';
 import Poll from '../components/Poll';
 import CreatePoll from '../components/CreatePoll';
-import {useNavigation} from '@react-navigation/core'
-
-import {collection, getDocs, orderBy, query} from 'firebase/firestore';
-import {auth, db} from '../firebase';
+import {
+  doc,
+  collection,
+  collectionGroup,
+  getDocs,
+  orderBy,
+  query,
+} from 'firebase/firestore';
+import {db, auth} from '../firebase';
 
 const HomeScreen = () => {
-
-  const navigation = useNavigation()
-  
-  const handleSignOut = () => {
-    auth
-    .signOut()
-    .then(() => {
-      navigation.replace("Login")
-    })
-    .catch(error => alert(error.message))
-  } 
   //data for home screen to load
   const [feedData, setFeedData] = useState([]);
 
@@ -35,27 +29,41 @@ const HomeScreen = () => {
 
   //state to show/hide the create poll form
   const [showCreatePoll, setShowCreatePoll] = useState(false);
+  const [showCreateRating, setShowCreateRating] = useState(false);
+
+  //const [showModal, setShowModal] = useState(false);
 
   const loadMoreData = async () => {
     // Fetch data from your collection in descending order of createdAt timestamp
-    const pollsRef = collection(db, 'polls');
+    const pollsRef = collectionGroup(db, 'polls');
     const pollsQuery = query(pollsRef, orderBy('createdAt', 'desc'));
     const snapshot = await getDocs(pollsQuery);
 
     // Map over the array of documents to create an array of objects
     const newData = snapshot.docs.map(doc => {
       const pollData = doc.data();
+      const currentTime = new Date();
+
+      // Check if the poll is expired
+      if (pollData.lifetime && pollData.lifetime.toDate() < currentTime) {
+        return null;
+      }
 
       return {
         question: pollData.question,
         options: Object.values(pollData.options),
         createdAt: pollData.createdAt,
+        pollId: doc.id,
         lifetime: pollData.lifetime,
         downVotes: pollData.downVotes,
+        userId: auth.currentUser.uid,
       };
     });
 
-    setFeedData(newData);
+    // Remove null values from the array
+    const filteredData = newData.filter(item => item !== null);
+
+    setFeedData(filteredData);
     setPage(page + 1);
   };
 
@@ -63,35 +71,20 @@ const HomeScreen = () => {
     loadMoreData();
   }, []);
 
-  //function to add a new poll to the database
-  const addPoll = async poll => {
-    try {
-      // Add a new document with a generated id.
-      const pollsRef = await collection(db, 'polls');
-      await addDoc(pollsRef, {...poll});
-      setShowCreatePoll(false); // Hide the create poll form after adding the poll
-    } catch (e) {
-      console.error('Error adding poll:', e);
-    }
-  };
-
   return (
-    <ScrollView>
-      <TouchableOpacity style={styles.button} onPress={handleSignOut}>
-        <Text style={styles.buttonText}>Sign Out</Text>      
-      </TouchableOpacity>
+    <ScrollView style={styles.scrollview}>
       <Image source={require('../RateTheBeach.png')} style={styles.logo} />
       {/* Show the create poll form if showCreatePoll is true */}
       {showCreatePoll ? (
         <View style={styles.pollContainer}>
-          <CreatePoll setShowCreatePoll={setShowCreatePoll} addPoll={addPoll} />
+          <CreatePoll setShowCreatePoll={setShowCreatePoll} />
         </View>
       ) : (
         <View style={styles.addButtonContainer}>
           <TouchableOpacity
             onPress={() => setShowCreatePoll(true)}
             style={styles.addButton}>
-            <Text style={styles.addButtonTitle}>Add Poll</Text>
+            <Text style={styles.addButtonTitle}>Add Post</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -101,8 +94,10 @@ const HomeScreen = () => {
             question={item.question}
             options={item.options}
             createdAt={item.createdAt}
+            pollId={item.pollId}
             lifetime={item.lifetime}
             downVotes={item.downVotes}
+            userId={item.userId} //figure out how to access current user id
           />
         </View>
       ))}
@@ -134,6 +129,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     margin: 50,
+    marginTop:10,
+    marginBottom: 100,
   },
   addButtonContainer: {
     alignItems: 'center',
@@ -145,6 +142,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#6666e0',
     borderRadius: 12,
+  },
+  ScrollView:{
+    marginBottom: 100,
   },
 
   addButtonTitle: {

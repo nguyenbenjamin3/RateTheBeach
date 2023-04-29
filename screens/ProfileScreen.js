@@ -1,42 +1,34 @@
 import React from 'react';
-import {useNavigation} from '@react-navigation/core'
+import {useNavigation} from '@react-navigation/core';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import RegisterScreen from './RegisterScreen';
-import LoginScreen from './LoginScreen';
+import OnboardingScreen from './OnboardingScreen';
+import { auth } from '../firebase';
 
 const ProfileScreen = ({navigation}) => {
 
-  const handleLogin = () => {
-    navigation.navigate(LoginScreen);
-  };
 
- 
-  const handleRegister = () => {
-    navigation.navigate(RegisterScreen);
-  };
+const handleSignOut = () => {
+  auth
+  .signOut()
+  .then(() => {
+    navigation.navigate('Onboarding')
+
+  })
+  .catch(error => alert(error.message))
+}
+
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>ProfileScreen</Text>
       <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      
-      
-      
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.button} 
+        onPress = {handleSignOut}
+        >
+          <Text style={styles.buttonText}>Sign Out</Text>
+        </TouchableOpacity>
       </View>
-     
 
-
-      <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Register</Text>
-      
-      
-      
-      </TouchableOpacity>
-      </View>
     </View>
   );
 };
@@ -58,7 +50,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 30,
-    alignSelf: 'center', 
+    alignSelf: 'center',
   },
   button: {
     backgroundColor: '#ffcd89',
