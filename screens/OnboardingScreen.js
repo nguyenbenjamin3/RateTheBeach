@@ -4,6 +4,7 @@ import Onboarding from 'react-native-onboarding-swiper';
 
 const OnboardingScreen = ({navigation}) => {
     return (
+      
       <SafeAreaView
         style={{
           flex: 1,
@@ -11,6 +12,9 @@ const OnboardingScreen = ({navigation}) => {
           alignItems: 'center',
           backgroundColor: '#fff',
         }}>
+          <View style={styles.logoContainer}>
+        <Image source={require('../RateTheBeach.png')} style={styles.logo} />
+      </View>
         <TouchableOpacity
           style={{
             backgroundColor: '#ffcd89',
@@ -45,6 +49,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     paddingTop: 50,
+
   },
   logo: {
     height: 150,
@@ -62,6 +67,16 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#2e64e5',
     fontFamily: 'Lato-Regular',
+  },
+  logoContainer: {
+    marginTop: 0,
+  },
+  logo: {
+    width: 550,
+    height: 250,
+    resizeMode: 'cover',
+    alignSelf: 'center',
+    marginBottom: 10,
   },
 });
 
