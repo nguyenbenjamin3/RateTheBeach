@@ -221,13 +221,16 @@ const HomeScreen = () => {
   // Remove null values from the array
   const filteredData = newData.filter(item => item !== null);
 
+  // Add a console.log statement to check the fetched data
+  console.log('Fetched data:', newData);
+
   setFeedData(filteredData);
   setPage(page + 1);
 };
 
-  useEffect(() => {
-    loadMoreData();
-  }, []);
+    useEffect(() => {
+      loadMoreData();
+    }, [refreshFeed]);
 
   const handleAddPollPress = () => {
     setShowModal(true);
