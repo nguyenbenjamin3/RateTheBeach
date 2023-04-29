@@ -10,7 +10,7 @@ import {collection, addDoc, updateDoc, doc} from 'firebase/firestore';
 import {db} from '../firebase';
 import {auth} from '../firebase';
 
-const CreatePoll = ({setShowCreatePoll}) => {
+const CreatePoll = ({setShowCreatePoll, refreshFeed}) => {
   // state to store the poll data
   const [poll, setPoll] = useState({
     question: '', // title of poll
@@ -90,6 +90,8 @@ const CreatePoll = ({setShowCreatePoll}) => {
       downvotes: 0,
       pollId: '',
     });
+
+    refreshFeed();
   };
 
   return (
@@ -155,3 +157,76 @@ const styles = StyleSheet.create({
 });
 
 export default CreatePoll;
+
+
+
+
+
+
+//  const loadMoreData = async () => {
+//    // Fetch data from your collection in descending order of createdAt timestamp
+//    const pollsRef = collectionGroup(db, 'polls');
+//    const pollsQuery = query(pollsRef, orderBy('createdAt', 'desc'));
+//    const snapshot = await getDocs(pollsQuery);
+//
+//    // Map over the array of documents to create an array of objects
+//    const newData = snapshot.docs.map(doc => {
+//      const pollData = doc.data();
+//      const currentTime = new Date();
+//
+//      // Check if the poll is expired
+//      if (pollData.lifetime && pollData.lifetime.toDate() < currentTime) {
+//        return null;
+//      }
+//
+//      return {
+//        question: pollData.question,
+//        options: Object.values(pollData.options),
+//        createdAt: pollData.createdAt,
+//        pollId: doc.id,
+//        lifetime: pollData.lifetime,
+//        downVotes: pollData.downVotes,
+//        userId: auth.currentUser.uid,
+//      };
+//    });
+//
+//    // Remove null values from the array
+//    const filteredData = newData.filter(item => item !== null);
+//
+//    setFeedData(filteredData);
+//    setPage(page + 1);
+//  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
