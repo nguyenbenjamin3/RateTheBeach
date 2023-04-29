@@ -23,17 +23,17 @@ export default function App() {
           <Stack.Screen
             name="Onboarding"
             component={OnboardingScreen}
-            options={{header: () => null}}
+            options={{headerShown: false}}
           />
           <Stack.Screen
             name="Login"
             component={LoginScreen}
-            options={{header: ({navigation}) => null}}
+            options={{headerShown: true}}
           />
           <Stack.Screen
             name="RegisterScreen"
             component={RegisterScreen}
-            options={({navigation}) => ({header: () => null})}
+            options={{headerShown: true}}
           />
           <Stack.Screen
             name="DisplayScreens"
