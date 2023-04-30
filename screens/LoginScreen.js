@@ -1,14 +1,16 @@
-import {KeyboardAvoidingView, TouchableOpacity, StyleSheet, Text, TextInput, View, Button,Image} from 'react-native';
+import {KeyboardAvoidingView, TouchableOpacity, StyleSheet, Text, TextInput, View, Button, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/core'
-import  {useState, React, useEffect} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {auth} from '../firebase'
 import HomeScreen from './HomeScreen';
+import { AuthContext } from '../navigation/AuthProvider';
 
-const LoginScreen = () => {
+
+const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-
-  const navigation = useNavigation()
+  // const { login } = useContext(AuthContext);
+  
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {

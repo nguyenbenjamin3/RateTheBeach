@@ -1,26 +1,49 @@
-import React from 'react';
+import {useContext} from 'react';
 import {useNavigation} from '@react-navigation/core';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import OnboardingScreen from './OnboardingScreen';
+import { getAuth } from 'firebase/auth';
 import { auth } from '../firebase';
+const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
+const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
+
+var admin = require("firebase-admin");
+var serviceAccount = require("path/to/serviceAccountKey.json");
+initializeApp();
+const db = getFirestore();
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
 
 const ProfileScreen = ({navigation}) => {
+  const auth2 = getAuth();
+  const user = auth2.currentUser;
 
+  const handleSignOut = () => {
+    auth
+    .signOut()
+    .then(() => {
+      navigation.navigate('Onboarding')
 
-const handleSignOut = () => {
-  auth
-  .signOut()
-  .then(() => {
-    navigation.navigate('Onboarding')
-
-  })
-  .catch(error => alert(error.message))
-}
-
-
+    })
+    .catch(error => alert(error.message))
+  }
+  console.log(user.uid)
+  // auth2
+  // .getUser(user.uid)
+  // .then((userRecord) => {
+  //   // See the UserRecord reference doc for the contents of userRecord.
+  //   console.log(`Successfully fetched user data: ${userRecord.toJSON()}`);
+  // })
+  // .catch((error) => {
+  //   console.log('Error fetching user data:', error);
+  // });
+  
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>ProfileScreen</Text>
+      <Text style={styles.text}>Profile Page {user.displayName}</Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} 
         onPress = {handleSignOut}
