@@ -1,11 +1,42 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {collection, addDoc, query, where, getDocs} from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  doc,
+  getDoc,
+} from 'firebase/firestore';
 import {db} from '../firebase';
 
 const Poll = ({pollId, userId, question, options, createdAt, downVotes}) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [totalVotes, setTotalVotes] = useState(0);
+  const [userFirstName, setUserFirstName] = useState('');
+  const [userLastName, setUserLastName] = useState('');
+
+  // Fetch user data when component mounts
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const usersRef = collection(db, 'users');
+        const querySnapshot = await getDocs(usersRef);
+        querySnapshot.forEach(doc => {
+          const userData = doc.data();
+          if (userData.uid === userId) {
+            setUserFirstName(userData.firstName);
+            setUserLastName(userData.lastName);
+          }
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUser();
+  }, [userId]);
 
   const createdAtTime = new Date(createdAt.toDate()).toLocaleString();
 
@@ -28,12 +59,12 @@ const Poll = ({pollId, userId, question, options, createdAt, downVotes}) => {
         return;
       }
       if (pollId && selectedOption) {
-        console.log('pollId and selectedOption are not null');
+        console.log(userFirstName, userLastName, selectedOption);
         await addDoc(
           voteRef,
           {
             pollId: pollId,
-            userId: userId,
+            uid: userId,
             option: selectedOption,
           },
           docId,
@@ -74,6 +105,7 @@ const Poll = ({pollId, userId, question, options, createdAt, downVotes}) => {
         disabled={!selectedOption}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
+      <Text>{`Created by: ${userFirstName} ${userLastName}`}</Text>
       <Text>{`Created at: ${createdAtTime}`}</Text>
     </View>
   );

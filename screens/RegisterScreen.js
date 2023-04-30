@@ -34,8 +34,8 @@ const RegisterScreen = () => {
         addDoc(usersRef, {
           uid: user.uid,
           email: user.email,
-          firstName,
-          lastName,
+          firstName: firstName,
+          lastName: lastName,
         })
           .then(() => {
             console.log('User added to Firestore');

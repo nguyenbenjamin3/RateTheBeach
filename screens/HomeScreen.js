@@ -39,6 +39,8 @@ const HomeScreen = () => {
     // Map over the array of documents to create an array of objects
     const newData = snapshot.docs.map(doc => {
       const pollData = doc.data();
+      //console.log(doc.id);
+      //console.log(pollData.creator);
       const currentTime = new Date();
 
       // Check if the poll is expired
@@ -53,7 +55,7 @@ const HomeScreen = () => {
         pollId: doc.id,
         lifetime: pollData.lifetime,
         downVotes: pollData.downVotes,
-        userId: auth.currentUser.uid,
+        userId: pollData.creator,
       };
     });
 
@@ -85,19 +87,23 @@ const HomeScreen = () => {
           </TouchableOpacity>
         </View>
       )}
-      {feedData.map((item, index) => (
-        <View key={index} style={styles.pollContainer}>
-          <Poll
-            question={item.question}
-            options={item.options}
-            createdAt={item.createdAt}
-            pollId={item.pollId}
-            lifetime={item.lifetime}
-            downVotes={item.downVotes}
-            userId={item.userId} //figure out how to access current user id
-          />
-        </View>
-      ))}
+      {feedData.map(
+        (item, index) =>
+          item && (
+            <View key={index} style={styles.pollContainer}>
+              <Poll
+                question={item.question}
+                options={item.options}
+                createdAt={item.createdAt}
+                pollId={item.pollId}
+                lifetime={item.lifetime}
+                downVotes={item.downVotes}
+                userId={item.userId}
+              />
+            </View>
+          ),
+      )}
+
       <View style={styles.buttonContainer}>
         <Button title="Load More" onPress={loadMoreData} />
       </View>
@@ -126,7 +132,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     margin: 50,
-    marginTop:10,
+    marginTop: 10,
     marginBottom: 100,
   },
   addButtonContainer: {
@@ -140,7 +146,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#6666e0',
     borderRadius: 12,
   },
-  ScrollView:{
+  ScrollView: {
     marginBottom: 100,
   },
 
