@@ -54,6 +54,7 @@ const Poll = ({pollId, userId, question, options, createdAt, downVotes}) => {
         where('pollId', '==', pollId),
         where('userId', '==', userId),
       );
+      Alert.alert('Vote Submitted!');
       const voteSnapshot = await getDocs(voteQuery);
       if (voteSnapshot.size > 0) {
         console.log('User has already voted for this poll');

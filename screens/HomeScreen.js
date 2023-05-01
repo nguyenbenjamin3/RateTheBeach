@@ -126,10 +126,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonContainer: {
-    margin: 50,
-    marginTop: 10,
-    marginBottom: 100,
+    marginVertical: 10,
+    marginHorizontal: 50,
+    width: 100,
+    alignSelf: 'center',
   },
+
   addButtonContainer: {
     alignItems: 'center',
   },
