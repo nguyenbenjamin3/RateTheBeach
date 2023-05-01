@@ -1,21 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {
-  collection,
-  addDoc,
-  query,
-  where,
-  getDocs,
-  doc,
-  getDoc,
-} from 'firebase/firestore';
+import {collection, addDoc, query, where, getDocs} from 'firebase/firestore';
 import {db} from '../firebase';
+import {Alert} from 'react-native';
 
 const Poll = ({pollId, userId, question, options, createdAt, downVotes}) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [totalVotes, setTotalVotes] = useState(0);
   const [userFirstName, setUserFirstName] = useState('');
   const [userLastName, setUserLastName] = useState('');
+  const [link, setLink] = useState('');
 
   // Fetch user data when component mounts
   useEffect(() => {
@@ -42,6 +36,13 @@ const Poll = ({pollId, userId, question, options, createdAt, downVotes}) => {
 
   const handleSelectOption = option => {
     setSelectedOption(option);
+  };
+
+  const handleLink = () => {
+    const baseUrl = 'https://RateTheBeach.com/poll/';
+    const pollUrl = `${baseUrl}${pollId}`;
+    setLink(pollUrl);
+    Alert.alert('Poll Link', pollUrl);
   };
 
   const handleVote = async () => {
@@ -107,6 +108,9 @@ const Poll = ({pollId, userId, question, options, createdAt, downVotes}) => {
       </TouchableOpacity>
       <Text>{`Created by: ${userFirstName} ${userLastName}`}</Text>
       <Text>{`Created at: ${createdAtTime}`}</Text>
+      <TouchableOpacity style={styles.shareButton} onPress={handleLink}>
+        <Text>Share Poll</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -151,6 +155,17 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     textAlign: 'center',
+  },
+  shareButton: {
+    backgroundColor: '#ccc',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    alignSelf: 'flex-start',
+  },
+  shareButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 

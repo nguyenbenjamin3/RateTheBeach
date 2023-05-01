@@ -21,6 +21,7 @@ const CreatePoll = ({setShowCreatePoll}) => {
     upvotes: 0,
     downvotes: 0,
     pollId: '',
+    link: '',
   });
 
   // function to add an empty option to the poll
@@ -93,6 +94,7 @@ const CreatePoll = ({setShowCreatePoll}) => {
       upvotes: 0,
       downvotes: 0,
       pollId: '',
+      link: '',
     });
   };
 
@@ -159,13 +161,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-    cancelButton: {
-      backgroundColor: '#f44336',
-      borderRadius: 5,
-      padding: 10,
-      alignItems: 'center',
-      marginTop: 10,
-    },
+  cancelButton: {
+    backgroundColor: '#f44336',
+    borderRadius: 5,
+    padding: 10,
+    alignItems: 'center',
+    marginTop: 10,
+  },
 });
 
 export default CreatePoll;

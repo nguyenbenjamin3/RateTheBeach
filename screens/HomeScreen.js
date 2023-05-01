@@ -10,14 +10,7 @@ import {
 import React, {useState, useEffect} from 'react';
 import Poll from '../components/Poll';
 import CreatePoll from '../components/CreatePoll';
-import {
-  doc,
-  collection,
-  collectionGroup,
-  getDocs,
-  orderBy,
-  query,
-} from 'firebase/firestore';
+import {collectionGroup, getDocs, orderBy, query} from 'firebase/firestore';
 import {db, auth} from '../firebase';
 
 const HomeScreen = () => {
