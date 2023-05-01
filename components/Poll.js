@@ -106,7 +106,7 @@ const Poll = ({pollId, userId, question, options, createdAt, downVotes}) => {
         disabled={!selectedOption}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
-      <Text>{`Created by: ${userFirstName} ${userLastName}`}</Text>
+      {/* <Text>{`Created by: ${userFirstName} ${userLastName}`}</Text> */}
       <Text>{`Created at: ${createdAtTime}`}</Text>
       <TouchableOpacity style={styles.shareButton} onPress={handleLink}>
         <Text>Share Poll</Text>

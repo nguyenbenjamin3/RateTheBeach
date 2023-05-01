@@ -19,7 +19,7 @@ const RegisterScreen = () => {
   const [lastName, setLastName] = useState('');
 
   const handleRegister = () => {
-    if ((!/^[^\s@]+@(csulb|student\.csulb)\.edu$/.test(email)))  {
+    if (!/^[^\s@]+@(csulb|student\.csulb)\.edu$/.test(email)) {
       console.error('Invalid email');
       return;
     }

@@ -7,7 +7,14 @@ import {
   StyleSheet,
   RefreshControl,
 } from 'react-native';
-import {collection, query, where, getDocs, deleteDoc} from 'firebase/firestore';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+  doc,
+} from 'firebase/firestore';
 import {auth, db} from '../firebase';
 
 const Liked = () => {
@@ -35,7 +42,7 @@ const Liked = () => {
 
   const handleDeletePoll = async id => {
     try {
-      await deleteDoc(collection(db, 'polls', id));
+      await deleteDoc(doc(db, 'polls', id));
       setPolls(polls.filter(poll => poll.id !== id));
       console.log('Poll successfully deleted!');
     } catch (error) {

@@ -69,6 +69,9 @@ const HomeScreen = () => {
   return (
     <ScrollView style={styles.scrollview}>
       <Image source={require('../RateTheBeach.png')} style={styles.logo} />
+      <View style={styles.buttonContainer}>
+        <Button title="Refresh" onPress={loadMoreData} />
+      </View>
       {/* Show the create poll form if showCreatePoll is true */}
       {showCreatePoll ? (
         <View style={styles.pollContainer}>
@@ -99,10 +102,6 @@ const HomeScreen = () => {
             </View>
           ),
       )}
-
-      <View style={styles.buttonContainer}>
-        <Button title="Load More" onPress={loadMoreData} />
-      </View>
     </ScrollView>
   );
 };
