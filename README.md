@@ -47,12 +47,13 @@ This project is licensed under the MIT License. See the LICENSE file for more in
 ## Programmers
 
 - [Chelsea Aguilar] (https://github.com/chelcx2)
-- [Naz Diam] ()
+- [Naz Diam] (https://github.com/yichii)
 - [Benjamin Nguyen] (https://github.com/nguyenbenjamin3)
 - [Daryl Nguyen] (https://github.com/nguyendaryl)
 - [Joey Rice] (https://github.com/Ricearoni26)
 - [Kenneth Su] (https://github.com/ksu4)
-- [James Ta] ()
+- [James Ta] (https://github.com/JamesTa2000)
+
 
 ## Acknowledgments
 
