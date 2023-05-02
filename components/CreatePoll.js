@@ -16,11 +16,12 @@ const CreatePoll = ({setShowCreatePoll}) => {
     question: '', // title of poll
     options: ['', ''], // array of options
     creator: '', // username or id of the poll creator
-    createdAt: new Date(), // date and time when the poll was created
+    createdAt: new Date(),
+    lifetimeInHours: null, // date and time when the poll was created
     lifetime: null, // timestamp for when the poll should expire
     upvotes: 0,
-    downvotes: 0,
     pollId: '',
+    showResults: false,
   });
 
   // function to add an empty option to the poll
@@ -44,11 +45,30 @@ const CreatePoll = ({setShowCreatePoll}) => {
     });
   };
 
+  const getPSTOffset = () => {
+    const timeZone = 'America/Los_Angeles';
+    const timeZoneOffset = new Intl.DateTimeFormat('en-US', {
+      timeZone,
+      timeZoneName: 'short',
+    })
+      .formatToParts(new Date())
+      .find(part => part.type === 'timeZoneName').value;
+  
+    const isPST = timeZoneOffset === 'PST';
+    const offset = isPST ? -8 : -7; // If it's PST, the offset is -8, otherwise, it's PDT (-7)
+    return offset * 60 * 60 * 1000;
+  };
+
   //function to add a new poll to the database
   const addPollToDB = async poll => {
     try {
-      const lifetimeInHours = 24;
-      const endTime = new Date(Date.now() + lifetimeInHours * 60 * 60 * 1000);
+      const lifetimeInHours = poll.lifetimeInHours || 24;
+      const currentTime = new Date();
+      const localOffset = currentTime.getTimezoneOffset() * 60 * 1000;
+      const pstOffset = getPSTOffset();
+      const currentTimeInPST = new Date(currentTime.getTime() + localOffset + pstOffset);
+
+      const endTime = new Date(currentTimeInPST.getTime() + lifetimeInHours * 60 * 60 * 1000);
 
       const pollWithEndTime = {
         ...poll,
@@ -91,8 +111,8 @@ const CreatePoll = ({setShowCreatePoll}) => {
       createdAt: new Date(),
       lifetime: null,
       upvotes: 0,
-      downvotes: 0,
       pollId: '',
+      showResults: false,
     });
   };
 
@@ -114,6 +134,12 @@ const CreatePoll = ({setShowCreatePoll}) => {
           onChangeText={text => handleOptionChange(text, index)}
         />
       ))}
+      <TextInput
+        style={styles.input}
+        placeholder="Lifetime in hours (default: 24)"
+        keyboardType="numeric"
+        onChangeText={text => setPoll({...poll, lifetimeInHours: parseInt(text) || null})}
+      />
       <TouchableOpacity style={styles.button} onPress={handleAddOption}>
         <Text style={styles.buttonText}>Add Option</Text>
       </TouchableOpacity>
@@ -130,7 +156,7 @@ const CreatePoll = ({setShowCreatePoll}) => {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    margin: 10,
+    margin: 2,
     borderWidth: 1,
     borderRadius: 10,
     borderColor: 'gray',
@@ -159,13 +185,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-    cancelButton: {
-      backgroundColor: '#f44336',
-      borderRadius: 5,
-      padding: 10,
-      alignItems: 'center',
-      marginTop: 10,
-    },
+  cancelButton: {
+    backgroundColor: '#f44336',
+    borderRadius: 5,
+    padding: 10,
+    alignItems: 'center',
+    marginTop: 10,
+  },
 });
 
 export default CreatePoll;
