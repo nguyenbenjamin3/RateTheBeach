@@ -10,7 +10,13 @@ import {
 import React, {useState, useEffect} from 'react';
 import Poll from '../components/Poll';
 import CreatePoll from '../components/CreatePoll';
-import LikedPost from '../components/LikedPost.js';
+//import LikedPost from '../components/likedPost';
+//import firebase from 'firebase/app';
+import 'firebase/database';
+
+import grayHeartImage from '../assets/icon_heart_.png';
+import redHeartImage from '../assets/icon_heart_.png';
+
 
 
 import {
