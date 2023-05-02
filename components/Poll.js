@@ -454,6 +454,7 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
       console.log('User has already upvoted this poll');
       return;
     }
+  }
 
   const handleLink = () => {
     const baseUrl = 'https://RateTheBeach.com/poll/';
@@ -462,22 +463,22 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
     Alert.alert('Poll Link', pollUrl);
   };
 
-  const handleVote = async () => {
-    try {
-      // Add a new document to the upvotes collection with the pollId and userId
-      const upvotesRef = collection(db, 'upvotes');
-      const newUpvoteDoc = {
-        pollId: pollId,
-        userId: userId,
-      };
-      await addDoc(upvotesRef, newUpvoteDoc);
+  // const handleVote = async () => {
+  //   try {
+  //     // Add a new document to the upvotes collection with the pollId and userId
+  //     const upvotesRef = collection(db, 'upvotes');
+  //     const newUpvoteDoc = {
+  //       pollId: pollId,
+  //       userId: userId,
+  //     };
+  //     await addDoc(upvotesRef, newUpvoteDoc);
 
-      setUpvoteCount(upvoteCount + 1);
-      setUpvoted(true);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  //     setUpvoteCount(upvoteCount + 1);
+  //     setUpvoted(true);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const hasUserMadeAVote = async () => {
     try{
@@ -568,12 +569,14 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
 
   const handleVote = async () => {
     try {
-      if (hasVoted || showResults) {
-
-      Alert.alert('Vote Submitted!');
+      const upvotesRef = collection(db, 'upvotes');
+      const voteQuery = query(
+        upvotesRef,
+        where('pollId', '==', pollId),
+        where('userId', '==', userId),
+      );
       const voteSnapshot = await getDocs(voteQuery);
       if (voteSnapshot.size > 0) {
-
         console.log('User has already voted for this poll');
         return;
       }
@@ -581,29 +584,21 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
         console.log(userFirstName, userLastName, selectedOption);
         const voteRef = collection(db, 'votes');
         const docId = `${pollId}-${userId}`;
-        await setDoc(doc(voteRef, docId), {
+        await setDoc(doc(voteRef, docId),{
           pollId: pollId,
           uid: userId,
           option: selectedOption,
         });
-
   
         const updatedOptionVotes = [...optionVotes];
         const optionIndex = options.indexOf(selectedOption);
         updatedOptionVotes[optionIndex]++;
-        await addDoc(
-          voteRef,
-          {
-            pollId: pollId,
-            uid: userId,
-            option: selectedOption,
-          },
-          docId,
-        );
+        
         setTotalVotes(totalVotes + 1);
         setOptionVotes(updatedOptionVotes);
         setHasVoted(true);
         showResults = true;
+        // Alert.alert('Vote Submitted!');
       } else {
         console.log('pollId or selectedOption is null');
       }
@@ -611,6 +606,7 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
       console.error(error);
     }
   };
+  
 
   const renderOption = (option, index) => {
     if (hasVoted || showResults) {
@@ -678,9 +674,11 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
               <Text style={styles.buttonText}>Submit</Text>
             </TouchableOpacity>
           )}
-          <Text>{`Created by: ${userFirstName} ${userLastName}`}</Text>
+          {/* <Text>{`Created by: ${userFirstName} ${userLastName}`}</Text> */}
           <Text>{`Created at: ${createdAtTime}`}</Text>
-          {/* <Text>{`Expires at: ${}`}</Text> */}
+          <Text>{`Expires at: ${createdAtTime}`}</Text>
+
+          
         </View>
       </View>
     </View>
@@ -774,6 +772,7 @@ const styles = StyleSheet.create({
   upvoteArrow: {
     justifyContent: 'center',
     fontSize: 30,
+  },
   shareButton: {
     backgroundColor: '#ccc',
     padding: 10,
