@@ -344,6 +344,7 @@ import {
   where,
   startAfter,
 } from 'firebase/firestore';
+
 import {db, auth} from '../firebase';
 
 const HomeScreen = () => {
@@ -422,7 +423,10 @@ const HomeScreen = () => {
     // Map over the array of documents to create an array of objects
     const newDataPromises = snapshot.docs.map(async doc => {
       const pollData = doc.data();
-  
+      //console.log(doc.id);
+      //console.log(pollData.creator);
+      const currentTime = new Date();
+      
       // Check if the poll is expired
       if (pollData.lifetime && pollData.lifetime.toDate && pollData.lifetime.toDate() < currentTime) {
         return null;
@@ -450,9 +454,9 @@ const HomeScreen = () => {
         pollId: doc.id,
         lifetime: pollData.lifetime,
         upVotes: pollData.upVotes,
-        userId: auth.currentUser.uid,
         showResults: hasVoted,
         userOption,
+        userId: pollData.creator,
       };
     });
   
@@ -553,6 +557,7 @@ const HomeScreen = () => {
             <Text style={styles.modalButtonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
+
       </Modal>
       <TouchableOpacity
         style={styles.fixedCreateButton}
@@ -593,6 +598,13 @@ const styles = StyleSheet.create({
   },
   footer: {
     justifyContent: 'center',
+    marginVertical: 10,
+    marginHorizontal: 50,
+    width: 100,
+    alignSelf: 'center',
+  },
+
+  addButtonContainer: {
     alignItems: 'center',
     padding: 10,
   },

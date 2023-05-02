@@ -22,6 +22,8 @@ const CreatePoll = ({setShowCreatePoll}) => {
     upvotes: 0,
     pollId: '',
     showResults: false,
+    link: '',
+
   });
 
   // function to add an empty option to the poll
@@ -113,6 +115,7 @@ const CreatePoll = ({setShowCreatePoll}) => {
       upvotes: 0,
       pollId: '',
       showResults: false,
+      link: '',
     });
   };
 

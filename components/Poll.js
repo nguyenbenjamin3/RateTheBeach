@@ -405,17 +405,43 @@ import {
 } from 'firebase/firestore';
 import PollOptions from './PollOptions'
 import {db} from '../firebase';
+import {Alert} from 'react-native';
 
 const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResults}) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [totalVotes, setTotalVotes] = useState(0);
   const [userFirstName, setUserFirstName] = useState('');
   const [userLastName, setUserLastName] = useState('');
+
   const [optionVotes, setOptionVotes] = useState(new Array(options.length).fill(0));
   const [hasVoted, setHasVoted] = useState(false);
   //const [showResults, setShowResults] = useState(false);
   const [upvoted, setUpvoted] = useState(false);
   const [upvoteCount, setUpvoteCount] = useState(upvotes || 0);
+
+  const [link, setLink] = useState('');
+
+  // Fetch user data when component mounts
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const usersRef = collection(db, 'users');
+        const querySnapshot = await getDocs(usersRef);
+        querySnapshot.forEach(doc => {
+          const userData = doc.data();
+          if (userData.uid === userId) {
+            setUserFirstName(userData.firstName);
+            setUserLastName(userData.lastName);
+          }
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUser();
+  }, [userId]);
+
 
   const [liked, setLiked] = useState(false);
 
@@ -428,6 +454,15 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
       console.log('User has already upvoted this poll');
       return;
     }
+
+  const handleLink = () => {
+    const baseUrl = 'https://RateTheBeach.com/poll/';
+    const pollUrl = `${baseUrl}${pollId}`;
+    setLink(pollUrl);
+    Alert.alert('Poll Link', pollUrl);
+  };
+
+  const handleVote = async () => {
     try {
       // Add a new document to the upvotes collection with the pollId and userId
       const upvotesRef = collection(db, 'upvotes');
@@ -534,6 +569,11 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
   const handleVote = async () => {
     try {
       if (hasVoted || showResults) {
+
+      Alert.alert('Vote Submitted!');
+      const voteSnapshot = await getDocs(voteQuery);
+      if (voteSnapshot.size > 0) {
+
         console.log('User has already voted for this poll');
         return;
       }
@@ -551,6 +591,15 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
         const updatedOptionVotes = [...optionVotes];
         const optionIndex = options.indexOf(selectedOption);
         updatedOptionVotes[optionIndex]++;
+        await addDoc(
+          voteRef,
+          {
+            pollId: pollId,
+            uid: userId,
+            option: selectedOption,
+          },
+          docId,
+        );
         setTotalVotes(totalVotes + 1);
         setOptionVotes(updatedOptionVotes);
         setHasVoted(true);
@@ -725,6 +774,16 @@ const styles = StyleSheet.create({
   upvoteArrow: {
     justifyContent: 'center',
     fontSize: 30,
+  shareButton: {
+    backgroundColor: '#ccc',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    alignSelf: 'flex-start',
+  },
+  shareButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 

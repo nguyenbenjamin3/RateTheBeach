@@ -47,7 +47,11 @@ const Tabs = () => {
               />
 
               <Text
-                style={{color: focused ? '#ffcd89' : '#000000', fontSize: 14,fontWeight: 'bold' }}>
+                style={{
+                  color: focused ? '#ffcd89' : '#000000',
+                  fontSize: 14,
+                  fontWeight: 'bold',
+                }}>
                 HOME
               </Text>
             </View>
@@ -75,8 +79,12 @@ const Tabs = () => {
               />
 
               <Text
-                style={{color: focused ? '#ffcd89' : '#000000', fontSize: 14,fontWeight: 'bold' }}>
-                LIKED
+                style={{
+                  color: focused ? '#ffcd89' : '#000000',
+                  fontSize: 14,
+                  fontWeight: 'bold',
+                }}>
+                CREATED
               </Text>
             </View>
           ),
@@ -103,7 +111,11 @@ const Tabs = () => {
               />
 
               <Text
-                style={{color: focused ? '#ffcd89' : '#000000', fontSize: 14,fontWeight: 'bold' }}>
+                style={{
+                  color: focused ? '#ffcd89' : '#000000',
+                  fontSize: 14,
+                  fontWeight: 'bold',
+                }}>
                 PROFILE
               </Text>
             </View>
@@ -111,7 +123,7 @@ const Tabs = () => {
         }}
       />
 
-<Tab.Screen
+      <Tab.Screen
         name="Search"
         component={SearchScreen}
         options={{
@@ -132,7 +144,11 @@ const Tabs = () => {
               />
 
               <Text
-                style={{color: focused ? '#ffcd89' : '#000000', fontSize: 14,fontWeight: 'bold' }}>
+                style={{
+                  color: focused ? '#ffcd89' : '#000000',
+                  fontSize: 14,
+                  fontWeight: 'bold',
+                }}>
                 SEARCH
               </Text>
             </View>

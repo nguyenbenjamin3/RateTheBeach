@@ -1,30 +1,48 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, FlatList, TouchableOpacity, StyleSheet} from 'react-native';
-import {collection, query, where, getDocs, deleteDoc} from 'firebase/firestore';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  RefreshControl,
+} from 'react-native';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+  doc,
+} from 'firebase/firestore';
 import {auth, db} from '../firebase';
 
 const Liked = () => {
   const [polls, setPolls] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    const fetchPolls = async () => {
-      const q = query(
-        collection(db, 'polls'),
-        where('creator', '==', auth.currentUser.uid),
-      );
-      const querySnapshot = await getDocs(q);
-      const fetchedPolls = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setPolls(fetchedPolls);
-    };
     fetchPolls();
   }, []);
 
+  const fetchPolls = async () => {
+    setRefreshing(true);
+    const q = query(
+      collection(db, 'polls'),
+      where('creator', '==', auth.currentUser.uid),
+    );
+    const querySnapshot = await getDocs(q);
+    const fetchedPolls = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setPolls(fetchedPolls);
+    setRefreshing(false);
+  };
+
   const handleDeletePoll = async id => {
     try {
-      await deleteDoc(collection(db, 'polls', id));
+      await deleteDoc(doc(db, 'polls', id));
       setPolls(polls.filter(poll => poll.id !== id));
       console.log('Poll successfully deleted!');
     } catch (error) {
@@ -56,6 +74,10 @@ const Liked = () => {
     );
   };
 
+  const onRefresh = () => {
+    fetchPolls();
+  };
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -63,7 +85,13 @@ const Liked = () => {
         renderItem={renderPoll}
         keyExtractor={item => item.id}
         ListEmptyComponent={() => <Text>You have not created any polls.</Text>}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
+      <TouchableOpacity style={styles.refreshButton} onPress={onRefresh}>
+        <Text style={styles.refreshButtonText}>Refresh</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -105,6 +133,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   deleteButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+  },
+  refreshButton: {
+    backgroundColor: '#007AFF',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    marginBottom: 80,
+  },
+  refreshButtonText: {
     color: '#fff',
     textAlign: 'center',
   },

@@ -19,7 +19,7 @@ const RegisterScreen = () => {
   const [lastName, setLastName] = useState('');
 
   const handleRegister = () => {
-    if ((!/^[^\s@]+@(csulb|student\.csulb)\.edu$/.test(email)))  {
+    if (!/^[^\s@]+@(csulb|student\.csulb)\.edu$/.test(email)) {
       console.error('Invalid email');
       return;
     }
@@ -34,8 +34,8 @@ const RegisterScreen = () => {
         addDoc(usersRef, {
           uid: user.uid,
           email: user.email,
-          firstName,
-          lastName,
+          firstName: firstName,
+          lastName: lastName,
         })
           .then(() => {
             console.log('User added to Firestore');
