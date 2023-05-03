@@ -24,7 +24,6 @@ const CreatePoll = ({setShowCreatePoll}) => {
     expiresAt: null,
     showResults: false,
     link: '',
-
   });
 
   // function to add an empty option to the poll
@@ -54,7 +53,9 @@ const CreatePoll = ({setShowCreatePoll}) => {
       const lifetimeInHours = poll.lifetimeInHours || 24;
       const currentTime = new Date();
 
-      const expiresAt = new Date(currentTime.getTime() + lifetimeInHours * 60 * 60 * 1000);
+      const expiresAt = new Date(
+        currentTime.getTime() + lifetimeInHours * 60 * 60 * 1000,
+      );
 
       const pollWithEndTime = {
         ...poll,
@@ -87,8 +88,9 @@ const CreatePoll = ({setShowCreatePoll}) => {
     const lifetimeInHours = poll.lifetimeInHours || 24;
     const currentTime = new Date();
 
-
-    const expiresAt = new Date(currentTime.getTime() + (lifetimeInHours * 60 * 60 * 1000));
+    const expiresAt = new Date(
+      currentTime.getTime() + lifetimeInHours * 60 * 60 * 1000,
+    );
 
     addPollToDB({
       ...poll,
@@ -105,7 +107,9 @@ const CreatePoll = ({setShowCreatePoll}) => {
       createdAt: new Date(),
       lifetimeInHours: lifetimeInHours, // date and time when the poll was created
       lifetime: null,
-      expiresAt: new Date(currentTime.getTime() * lifetimeInHours * 60 * 60 * 1000), 
+      expiresAt: new Date(
+        currentTime.getTime() * lifetimeInHours * 60 * 60 * 1000,
+      ),
       upvotes: 0,
       pollId: '',
       showResults: false,
@@ -135,7 +139,9 @@ const CreatePoll = ({setShowCreatePoll}) => {
         style={styles.input}
         placeholder="Lifetime in hours (default: 24)"
         keyboardType="numeric"
-        onChangeText={text => setPoll({...poll, lifetimeInHours: parseInt(text) || null})}
+        onChangeText={text =>
+          setPoll({...poll, lifetimeInHours: parseInt(text) || null})
+        }
       />
       <TouchableOpacity style={styles.button} onPress={handleAddOption}>
         <Text style={styles.buttonText}>Add Option</Text>

@@ -11,17 +11,29 @@ import {
   updateDoc,
   setDoc,
 } from 'firebase/firestore';
-import PollOptions from './PollOptions'
+import PollOptions from './PollOptions';
 import {db} from '../firebase';
 import {Alert} from 'react-native';
 
-const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResults, expiresAt, lifetimeInHours}) => {
+const Poll = ({
+  pollId,
+  userId,
+  question,
+  options,
+  createdAt,
+  upvotes,
+  showResults,
+  expiresAt,
+  lifetimeInHours,
+}) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [totalVotes, setTotalVotes] = useState(0);
   const [userFirstName, setUserFirstName] = useState('');
   const [userLastName, setUserLastName] = useState('');
 
-  const [optionVotes, setOptionVotes] = useState(new Array(options.length).fill(0));
+  const [optionVotes, setOptionVotes] = useState(
+    new Array(options.length).fill(0),
+  );
   const [hasVoted, setHasVoted] = useState(false);
   //const [showResults, setShowResults] = useState(false);
   const [upvoted, setUpvoted] = useState(false);
@@ -50,7 +62,6 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
 
     fetchUser();
   }, [userId]);
-
 
   const [liked, setLiked] = useState(false);
 
@@ -92,7 +103,7 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
   };
 
   const hasUserMadeAVote = async () => {
-    try{
+    try {
       const voteRef = collection(db, 'votes');
       const voteQuery = query(
         voteRef,
@@ -123,7 +134,10 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
           setUpvoted(true);
         }
         // this fetches the total upvote count for the poll
-        const totalUpvotesQuery = query(upvotesRef, where('pollId', '==', pollId));
+        const totalUpvotesQuery = query(
+          upvotesRef,
+          where('pollId', '==', pollId),
+        );
         const totalUpvotesSnapshot = await getDocs(totalUpvotesQuery);
         setUpvoteCount(totalUpvotesSnapshot.size);
       } catch (error) {
@@ -178,9 +192,6 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
   // const expirationTime = createdAtDate.getTime() + (lifetimeInHours * 60 * 60 * 1000);
   // const expiresAtTime = new Date(expirationTime).toLocaleString(); // convert expiration time to Date object and format as string
 
-
-
-
   const handleSelectOption = option => {
     setSelectedOption(option);
   };
@@ -214,7 +225,7 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
         console.log(userFirstName, userLastName, selectedOption);
         const voteRef = collection(db, 'votes');
         const docId = `${pollId}-${userId}`;
-        await setDoc(doc(voteRef, docId),{
+        await setDoc(doc(voteRef, docId), {
           pollId: pollId,
           uid: userId,
           option: selectedOption,
@@ -222,7 +233,7 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
         const updatedOptionVotes = [...optionVotes];
         const optionIndex = options.indexOf(selectedOption);
         updatedOptionVotes[optionIndex]++;
-        
+
         setTotalVotes(totalVotes + 1);
         setOptionVotes(updatedOptionVotes);
         setHasVoted(true);
@@ -234,21 +245,23 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
       console.error(error);
     }
   };
-  
 
   const renderOption = (option, index) => {
     if (hasVoted || showResults) {
-      const votePercentage = totalVotes > 0 ? (optionVotes[index] / totalVotes) * 100 : 0;
+      const votePercentage =
+        totalVotes > 0 ? (optionVotes[index] / totalVotes) * 100 : 0;
       return (
         <View key={index} style={styles.optionContainer}>
           <View
             style={[
               styles.percentageBar,
-              { width: `${votePercentage}%`, backgroundColor: '#007bff' },
+              {width: `${votePercentage}%`, backgroundColor: '#007bff'},
             ]}
           />
           <Text style={styles.optionText}>{option}</Text>
-          <Text style={styles.percentageText}>{votePercentage.toFixed(1)}%</Text>
+          <Text style={styles.percentageText}>
+            {votePercentage.toFixed(1)}%
+          </Text>
         </View>
       );
     } else {
@@ -260,14 +273,12 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
             selectedOption === option && styles.selectedOption,
           ]}
           onPress={() => handleSelectOption(option)}
-          disabled={hasVoted}
-        >
+          disabled={hasVoted}>
           <Text
             style={[
               styles.optionText,
               selectedOption === option && styles.selectedOptionText,
-            ]}
-          >
+            ]}>
             {option}
           </Text>
         </TouchableOpacity>
@@ -280,11 +291,7 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
       <View style={styles.voteButtonContainer}>
         <TouchableOpacity onPress={upvotePoll}>
           <Text
-            style={[
-              styles.upvoteArrow,
-              { color: upvoted ? 'green' : 'gray' },
-            ]}
-          >
+            style={[styles.upvoteArrow, {color: upvoted ? 'green' : 'gray'}]}>
             ▲
           </Text>
         </TouchableOpacity>
@@ -292,19 +299,22 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
       </View>
       <View style={styles.pollContentWrapper}>
         <View style={styles.pollContent}>
-          <Text style={styles.question} numberOfLines={2} lineBreakMode="tail" >{question}</Text>
+          <Text style={styles.question} numberOfLines={2} lineBreakMode="tail">
+            {question}
+          </Text>
           {options.map((option, index) => renderOption(option, index))}
           <View style={styles.buttonContainer}>
-          {!hasVoted && (
-            <TouchableOpacity
+            {!hasVoted && (
+              <TouchableOpacity
                 style={styles.button}
                 onPress={handleVote}
-                disabled={!selectedOption || hasVoted}
-              >
+                disabled={!selectedOption || hasVoted}>
                 <Text style={styles.buttonText}>Submit</Text>
               </TouchableOpacity>
             )}
-            <TouchableOpacity onPress={handleLink} style={styles.showLinkButton}>
+            <TouchableOpacity
+              onPress={handleLink}
+              style={styles.showLinkButton}>
               <Text style={styles.showLinkButtonText}>Share</Text>
             </TouchableOpacity>
           </View>
@@ -316,7 +326,6 @@ const Poll = ({pollId, userId, question, options, createdAt, upvotes, showResult
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   optionContainer: {
@@ -349,7 +358,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
     width: '80%',
-    
   },
   option: {
     padding: 10,

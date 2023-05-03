@@ -65,30 +65,28 @@
 //     setShowModal(false);
 //   };
 
-
 //   const loadMoreData = async (reset = false) => {
 //     setIsLoading(true);
 //     const currentTime = new Date();
 //     const votesRef = collection(db, 'votes');
 //     // Fetch data from your collection in descending order of createdAt timestamp
 //     const pollsRef = collection(db, 'polls');
-//     //const pollsQuery = query(pollsRef, orderBy('createdAt', 'desc'));  
+//     //const pollsQuery = query(pollsRef, orderBy('createdAt', 'desc'));
 //     const pollsQuery = lastVisible && !reset
 //     ? query(pollsRef, orderBy('createdAt', 'desc'), startAfter(lastVisible))
 //     : query(pollsRef, orderBy('createdAt', 'desc'));
 
 //     const snapshot = await getDocs(pollsQuery);
 
-  
 //     // Map over the array of documents to create an array of objects
 //     const newDataPromises = snapshot.docs.map(async doc => {
 //       const pollData = doc.data();
-  
+
 //       // Check if the poll is expired
 //       if (pollData.lifetime && pollData.lifetime.toDate && pollData.lifetime.toDate() < currentTime) {
 //         return null;
 //       }
-  
+
 //       // Add this block to get the user's vote data for this poll
 //       const userVoteQuery = query(
 //         votesRef,
@@ -98,7 +96,7 @@
 //       const userVoteSnapshot = await getDocs(userVoteQuery);
 //       const userVoted = userVoteSnapshot.size > 0;
 //       const userOption = userVoted ? userVoteSnapshot.docs[0].data().option : null;
-  
+
 //       return {
 //         question: pollData.question,
 //         options: Object.values(pollData.options),
@@ -111,15 +109,15 @@
 //         userOption,
 //       };
 //     });
-  
+
 //     const lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
 //     reset ? setLastVisible(null) : setLastVisible(lastVisibleDoc);
 
 //     const newData = await Promise.all(newDataPromises);
-  
+
 //     // Remove null values from the array
 //     const filteredData = newData.filter(item => item !== null);
-    
+
 //     if (reset) {
 //       setFeedData(filteredData);
 //     } else {
@@ -163,7 +161,7 @@
 //             ) : null}
 //             {showCreateRating ? (
 //               <View style={styles.pollContainer}>
-//                 <CreateRating setShowCreateRating={setShowCreateRating} afterSubmit={scrollToCreation}/>   
+//                 <CreateRating setShowCreateRating={setShowCreateRating} afterSubmit={scrollToCreation}/>
 //               </View>) : null}
 //           </>
 //         }
@@ -223,9 +221,8 @@
 //         <Text style={styles.fixedCreateButtonText}>+</Text>
 //       </TouchableOpacity>
 //     </>
-//   );  
+//   );
 // };
-  
 
 // export default HomeScreen;
 
@@ -313,10 +310,6 @@
 //   },
 // });
 
-
-
-
-
 import {
   StyleSheet,
   Text,
@@ -389,7 +382,7 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    const checkHasVoted = async (pollId) => {
+    const checkHasVoted = async pollId => {
       const voteRef = collection(db, 'votes');
       const userVoteQuery = query(
         voteRef,
@@ -402,11 +395,10 @@ const HomeScreen = () => {
     };
 
     // Use the checkHasVoted function to check if the user has voted for each poll
-    feedData.forEach((item) => {
+    feedData.forEach(item => {
       checkHasVoted(item.pollId);
     });
   }, [feedData]);
-
 
   const loadMoreData = async (reset = false) => {
     setIsLoading(true);
@@ -414,9 +406,10 @@ const HomeScreen = () => {
     const votesRef = collection(db, 'votes');
     const pollsRef = collection(db, 'polls');
 
-    const pollsQuery = lastVisible && !reset
-    ? query(pollsRef, orderBy('createdAt', 'desc'), startAfter(lastVisible))
-    : query(pollsRef, orderBy('createdAt', 'desc'));
+    const pollsQuery =
+      lastVisible && !reset
+        ? query(pollsRef, orderBy('createdAt', 'desc'), startAfter(lastVisible))
+        : query(pollsRef, orderBy('createdAt', 'desc'));
 
     const snapshot = await getDocs(pollsQuery);
 
@@ -426,9 +419,13 @@ const HomeScreen = () => {
       //console.log(doc.id);
       //console.log(pollData.creator);
       const currentTime = new Date();
-      
+
       // Check if the poll is expired
-      if (pollData.lifetime && pollData.lifetime.toDate && pollData.lifetime.toDate() < currentTime) {
+      if (
+        pollData.lifetime &&
+        pollData.lifetime.toDate &&
+        pollData.lifetime.toDate() < currentTime
+      ) {
         return null;
       }
 
@@ -436,7 +433,7 @@ const HomeScreen = () => {
       // if (feedData.some(feedItem => feedItem.pollId === doc.id)) {
       //   return null;
       // }
-  
+
       // Add this block to get the user's vote data for this poll
       const userVoteQuery = query(
         votesRef,
@@ -444,9 +441,11 @@ const HomeScreen = () => {
         where('userId', '==', auth.currentUser.uid),
       );
       const userVoteSnapshot = await getDocs(userVoteQuery);
-      setHasVoted(userVoteSnapshot.size > 0)
-      const userOption = hasVoted ? userVoteSnapshot.docs[0].data().option : null;
-  
+      setHasVoted(userVoteSnapshot.size > 0);
+      const userOption = hasVoted
+        ? userVoteSnapshot.docs[0].data().option
+        : null;
+
       return {
         question: pollData.question,
         options: Object.values(pollData.options),
@@ -459,15 +458,15 @@ const HomeScreen = () => {
         userId: pollData.creator,
       };
     });
-  
+
     const lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
     reset ? setLastVisible(null) : setLastVisible(lastVisibleDoc);
 
     const newData = await Promise.all(newDataPromises);
-  
+
     // Remove null values from the array
     const filteredData = newData.filter(item => item !== null);
-    
+
     if (reset) {
       setFeedData(filteredData);
     } else {
@@ -499,20 +498,30 @@ const HomeScreen = () => {
         ref={flatListRef}
         ListHeaderComponent={
           <>
-            <Image source={require('../RateTheBeach.png')} style={styles.logo} />
+            <Image
+              source={require('../RateTheBeach.png')}
+              style={styles.logo}
+            />
             {showCreatePoll ? (
               <View style={styles.pollContainer}>
-                <CreatePoll setShowCreatePoll={setShowCreatePoll} afterSubmit={scrollToCreation}/>
+                <CreatePoll
+                  setShowCreatePoll={setShowCreatePoll}
+                  afterSubmit={scrollToCreation}
+                />
               </View>
             ) : null}
             {showCreateRating ? (
               <View style={styles.pollContainer}>
-                <CreateRating setShowCreateRating={setShowCreateRating} afterSubmit={scrollToCreation}/>   
-              </View>) : null}
+                <CreateRating
+                  setShowCreateRating={setShowCreateRating}
+                  afterSubmit={scrollToCreation}
+                />
+              </View>
+            ) : null}
           </>
         }
         data={feedData}
-        renderItem={({ item, index }) => (
+        renderItem={({item, index}) => (
           <View key={index} style={styles.pollContainer}>
             <Poll
               pollId={item.pollId}
@@ -558,7 +567,6 @@ const HomeScreen = () => {
             <Text style={styles.modalButtonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
-
       </Modal>
       <TouchableOpacity
         style={styles.fixedCreateButton}
@@ -566,9 +574,8 @@ const HomeScreen = () => {
         <Text style={styles.fixedCreateButtonText}>+</Text>
       </TouchableOpacity>
     </>
-  );  
+  );
 };
-  
 
 export default HomeScreen;
 

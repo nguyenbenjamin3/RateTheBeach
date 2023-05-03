@@ -1,39 +1,45 @@
-import {KeyboardAvoidingView, TouchableOpacity, StyleSheet, Text, TextInput, View, Button,Image} from 'react-native';
-import {useNavigation} from '@react-navigation/core'
-import  {useState, React, useEffect} from 'react';
-import {auth} from '../firebase'
+import {
+  KeyboardAvoidingView,
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Button,
+  Image,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/core';
+import {useState, React, useEffect} from 'react';
+import {auth} from '../firebase';
 import HomeScreen from './HomeScreen';
 
 const LoginScreen = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
-        navigation.navigate('DisplayScreens')
-      }   
-    })
-      return unsubscribe
-  }, [])
- 
+        navigation.navigate('DisplayScreens');
+      }
+    });
+    return unsubscribe;
+  }, []);
+
   const handleLogin = () => {
     auth
       .signInWithEmailAndPassword(email, password)
       .then(userCredentials => {
         const user = userCredentials.user;
         console.log(user.email);
-    })
-    .catch(error => alert(error.message))
-  } 
+      })
+      .catch(error => alert(error.message));
+  };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior="padding"
-    >
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.logoContainer}>
         <Image source={require('../RateTheBeach.png')} style={styles.logo} />
       </View>
@@ -54,23 +60,20 @@ const LoginScreen = () => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress = {handleLogin}
-          style={styles.button}
-
-        >
+        <TouchableOpacity onPress={handleLogin} style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           onPress={() => navigation.navigate('RegisterScreen')}
-          style={styles.buttonReg}
-          >
-          <Text style={styles.buttonRegText}>Don't have an account? Register.</Text>
+          style={styles.buttonReg}>
+          <Text style={styles.buttonRegText}>
+            Don't have an account? Register.
+          </Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
-  )
+  );
 };
 
 export default LoginScreen;
@@ -96,7 +99,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 30,
-    alignSelf: 'center', 
+    alignSelf: 'center',
   },
   button: {
     backgroundColor: '#ffcd89',
@@ -113,7 +116,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-    buttonRegText: {
+  buttonRegText: {
     color: 'black',
     fontWeight: '700',
     fontSize: 13,
