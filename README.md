@@ -23,6 +23,10 @@ To install the app, follow these steps:
 
 yarn install
 
+or 
+
+npm install
+
 4. Create a new Firebase project and set up the necessary configurations, including adding the Firebase config file to the project.
 5. Run the following command to start the app on your local machine:
 
