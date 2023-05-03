@@ -21,6 +21,7 @@ const CreatePoll = ({setShowCreatePoll}) => {
     lifetime: null, // timestamp for when the poll should expire
     upvotes: 0,
     pollId: '',
+    expiresAt: null,
     showResults: false,
     link: '',
 
@@ -47,34 +48,17 @@ const CreatePoll = ({setShowCreatePoll}) => {
     });
   };
 
-  const getPSTOffset = () => {
-    const timeZone = 'America/Los_Angeles';
-    const timeZoneOffset = new Intl.DateTimeFormat('en-US', {
-      timeZone,
-      timeZoneName: 'short',
-    })
-      .formatToParts(new Date())
-      .find(part => part.type === 'timeZoneName').value;
-  
-    const isPST = timeZoneOffset === 'PST';
-    const offset = isPST ? -8 : -7; // If it's PST, the offset is -8, otherwise, it's PDT (-7)
-    return offset * 60 * 60 * 1000;
-  };
-
   //function to add a new poll to the database
   const addPollToDB = async poll => {
     try {
       const lifetimeInHours = poll.lifetimeInHours || 24;
       const currentTime = new Date();
-      const localOffset = currentTime.getTimezoneOffset() * 60 * 1000;
-      const pstOffset = getPSTOffset();
-      const currentTimeInPST = new Date(currentTime.getTime() + localOffset + pstOffset);
 
-      const endTime = new Date(currentTimeInPST.getTime() + lifetimeInHours * 60 * 60 * 1000);
+      const expiresAt = new Date(currentTime.getTime() + lifetimeInHours * 60 * 60 * 1000);
 
       const pollWithEndTime = {
         ...poll,
-        lifetime: endTime,
+        lifetime: expiresAt,
       };
       // Add a new document with a generated id.
       const pollsRef = await addDoc(collection(db, 'polls'), pollWithEndTime);
@@ -100,18 +84,28 @@ const CreatePoll = ({setShowCreatePoll}) => {
     const currentUser = auth.currentUser;
     const userId = currentUser ? currentUser.uid : null;
 
+    const lifetimeInHours = poll.lifetimeInHours || 24;
+    const currentTime = new Date();
+
+
+    const expiresAt = new Date(currentTime.getTime() + (lifetimeInHours * 60 * 60 * 1000));
+
     addPollToDB({
       ...poll,
       options: poll.options.filter(option => option !== ''),
       creator: userId,
+      expiresAt: expiresAt,
+      lifetimeInHours: lifetimeInHours,
     });
 
     setPoll({
-      question: '',
-      options: ['', ''],
-      creator: '',
+      question: '', // title of poll
+      options: ['', ''], // array of options
+      creator: '', // username or id of the poll creator
       createdAt: new Date(),
+      lifetimeInHours: lifetimeInHours, // date and time when the poll was created
       lifetime: null,
+      expiresAt: new Date(currentTime.getTime() * lifetimeInHours * 60 * 60 * 1000), 
       upvotes: 0,
       pollId: '',
       showResults: false,

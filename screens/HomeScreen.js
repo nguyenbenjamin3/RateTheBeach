@@ -523,6 +523,7 @@ const HomeScreen = () => {
               upvotes={item.upvotes}
               hasVoted={item.hasVoted}
               userOption={item.userOption}
+              expiresAt={item.expiresAt}
             />
           </View>
         )}
